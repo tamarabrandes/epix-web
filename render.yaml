@@ -1,0 +1,39 @@
+# render.yaml – Testinstallation E-PIX auf Render
+services:
+  # WildFly E-PIX Web Service
+  - type: web
+    name: epix-wildfly
+    env: docker
+    image: mosaicgreifswald/wildfly:36
+    plan: free
+    envVars:
+      - key: TTP_EPIX_DB_HOST
+        fromService:
+          type: pserv
+          name: epix-mysql
+      - key: TTP_EPIX_DB_PORT
+        value: 3306
+      - key: TTP_EPIX_DB_NAME
+        value: epix
+      - key: TTP_EPIX_DB_USER
+        value: root
+      - key: TTP_EPIX_DB_PASS
+        value: root
+      - key: PORT
+        value: 8080
+      - key: TZ
+        value: Europe/Berlin
+
+  # MySQL Private Service für Tests
+  - type: pserv
+    name: epix-mysql
+    env: docker
+    image: mysql:8
+    plan: free
+    envVars:
+      - key: MYSQL_ROOT_PASSWORD
+        value: root
+      - key: MYSQL_DATABASE
+        value: epix
+      - key: TZ
+        value: Europe/Berlin
